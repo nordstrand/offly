@@ -22,10 +22,14 @@ var request = require("request");
 } (process.argv))
 
 
-var argv = require('minimist')(process.argv.slice(2), { default : {file : "http.json"}});
+var argv = require('minimist')(process.argv.slice(2), { default : {
+                                                       file : "http.json",
+                                                       port : 8123}});
 
 if (argv._.indexOf("dump") != -1 ) {
     require("./lib/dump").start(argv.file);
+} else if (argv._.indexOf("serve") != -1 ) {
+    require("./lib/serve").start(argv.file);
 } else {
     help();
 }
@@ -34,7 +38,9 @@ if (argv._.indexOf("dump") != -1 ) {
 
 function help() {
     console.log(require("./package.json").name + " version " + require("./package.json").version);
-    console.log( "dump - spin up intercepting proxy for dumping traffic to file"); 
+    console.log( "dump  - spin up intercepting proxy for dumping traffic to file"); 
+    console.log( "serve - serve file contents"); 
+
     console.log( "--file=<path to spool file>");
     
 }
