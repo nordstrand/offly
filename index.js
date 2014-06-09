@@ -17,17 +17,23 @@ if (options.contains("dump")) {
 
 
 function help() {
-    console.log(require("./package.json").name + " command [<options>]" );
+    console.log(require("./package.json").name + " [<global options>] command [<options>]" );
+    console.log();
     console.log();
     console.log("Commands");
     console.log( "dump  - spin up proxy dumping intercepted traffic to file"); 
+    console.log();
     console.log( "serve - serve dump file contents over http");
+    console.log( "  --explode runs in exploded mode, resources in path will take precendence to file contents");
+    console.log( "  --explode_path=<path> ");
+    console.log();
     console.log( "show  - show dump file contents");
     console.log();
-    console.log("Options");
-    console.log( "--file=<path to dump file>");
-    console.log( "--port=<tcp port to listen to>");
-    console.log( "--debug");
-    console.log( "--version");
+    console.log();
+    console.log("Global options");
+    console.log( "  --file=<path to dump file>");
+    console.log( "  --port=<tcp port to listen to>");
+    console.log( "  --debug");
+    console.log( "  --version");
  
 }
