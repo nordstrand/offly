@@ -9,6 +9,8 @@ if (options.contains("dump")) {
     require("./lib/serve").start(options.get("file"));
 } else if (options.contains("show")) {
     require("./lib/show")(options.get("file"));
+} else if (options.contains("explode")) {
+    require("./lib/explode")(options.get("file"));    
 } else if (options.get("version")) { 
     console.log(require("./package.json").name + " version " + require("./package.json").version);
 } else {
