@@ -1,8 +1,8 @@
 var options = require("./lib/options");
 
 
-exports.start = function(arg) {
-    options.parseArguments(arg) ;
+exports.start = function (arg) {
+    options.parseArguments(arg);
 
     if (options.contains("dump")) {
         require("./lib/dump").start(options.cli.file);
@@ -12,7 +12,7 @@ exports.start = function(arg) {
         require("./lib/show")(options.cli.file);
     } else if (options.contains("explode")) {
         require("./lib/explode")(options.cli.file);
-    } else if (options.get("version")) { 
+    } else if (options.cli.version) {
         console.log(require("./package.json").name + " version " + require("./package.json").version);
     } else {
         options.printHelp();
