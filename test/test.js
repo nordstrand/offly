@@ -171,5 +171,4 @@ describe('offly e2e', function() {
             done(e);
         });
     }
-
 })
