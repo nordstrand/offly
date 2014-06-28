@@ -72,9 +72,6 @@ describe('offly e2e', function() {
                 return offly.stop();
             })
             .then(function() {
-                return stopContentServer();
-            })
-            .then(function() {
                 var x = fs.readFileSync(dumpFile, 'utf-8');
                 var data = new Buffer(JSON.parse(x)['/'].data, 'base64');
                 assert.equal("doooh", data);
