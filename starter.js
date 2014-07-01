@@ -12,6 +12,8 @@ exports.start = function (arg) {
         require("./lib/show")(options.cli.file);
     } else if (options.contains("explode")) {
         require("./lib/explode")(options.cli.file);
+    } else if (options.contains("scrape")) {
+        require("./lib/scrape").start(options.cli.file);
     } else if (options.cli.version) {
         console.log(require("./package.json").name + " version " + require("./package.json").version);
     } else {
