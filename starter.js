@@ -5,15 +5,15 @@ exports.start = function (arg) {
     options.parseArguments(arg);
 
     if (options.contains("dump")) {
-        require("./lib/dump").start(options.cli.file);
+        require("./lib/dump").start(options.cli);
     } else if (options.contains("serve")) {
-        require("./lib/serve").start(options.cli.file);
+        require("./lib/serve").start(options.cli);
     } else if (options.contains("show")) {
-        require("./lib/show")(options.cli.file);
+        require("./lib/show")(options.cli);
     } else if (options.contains("explode")) {
-        require("./lib/explode")(options.cli.file);
+        require("./lib/explode")(options.cli);
     } else if (options.contains("scrape")) {
-        require("./lib/scrape").start(options.cli.file);
+        require("./lib/scrape").start(options.cli);
     } else if (options.cli.version) {
         console.log(require("./package.json").name + " version " + require("./package.json").version);
     } else {
