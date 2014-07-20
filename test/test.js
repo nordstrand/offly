@@ -73,7 +73,7 @@ describe('offly e2e', function() {
             })
             .then(function() {
                 var x = fs.readFileSync(dumpFile, 'utf-8');
-                var data = new Buffer(JSON.parse(x)['/'].data, 'base64');
+                var data = new Buffer(JSON.parse(x)[0].data, 'base64');
                 assert.equal("doooh", data);
             });
         });
@@ -129,6 +129,8 @@ describe('offly e2e', function() {
             });
         });
     });
+
+
 
     function startContentServer() {
         server = http.createServer(function (req, res) {
