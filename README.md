@@ -1,6 +1,6 @@
 # Offly
 
-A general purpose tool for generating high fidelity static reproductions of highly dynamic web sites.
+A multi-purpose tool for capturing high fidelity static reproductions of highly dynamic web sites.
 
 ### Usage
 
