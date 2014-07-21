@@ -5,7 +5,7 @@ var assert = require("assert"),
     temp = require("temp").track(),
     offly = require("./app-under-test");
 
-describe('offly e2e', function() {
+describe("offly e2e", function() {
     var server;
     var PORT = 9615;
     var dumpFile;
@@ -20,11 +20,11 @@ describe('offly e2e', function() {
         .then(function() { done(); });
     });
 
-    it('should proxy response', function(done) {
+    it("should proxy response", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(['dump', '--file', dumpFile]);
+                return offly.start(["dump", "--file", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -36,7 +36,7 @@ describe('offly e2e', function() {
                 var deferred = Q.defer();
                 http.get(options, function(res) {
                     assert.equal(200, res.statusCode);
-                    res.on('data', function (chunk) {
+                    res.on("data", function (chunk) {
                         assert.equal("doooh", chunk);
                         deferred.resolve();
                     });
@@ -47,11 +47,11 @@ describe('offly e2e', function() {
         });
     });
 
-    it('should persist response', function(done) {
+    it("should persist response", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(['dump', '--file', dumpFile]);
+                return offly.start(["dump", "--file", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -72,18 +72,53 @@ describe('offly e2e', function() {
                 return offly.stop();
             })
             .then(function() {
-                var x = fs.readFileSync(dumpFile, 'utf-8');
-                var data = new Buffer(JSON.parse(x)[0].data, 'base64');
+                var x = fs.readFileSync(dumpFile, "utf-8");
+                var data = new Buffer(JSON.parse(x)[0].data, "base64");
                 assert.equal("doooh", data);
             });
         });
     });
+    
+    it("should normalize header capitalization on persist", function(done) {
+        wrapAsyncPromise(done, function() {
+            return startContentServer(function (req, res) {
+                res.writeHead(200, {"ConTent-type": "text/plain"});
+                res.end("doooh");
+            })
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile]);
+            })
+            .then(function() {
+                var options = {
+                    host: "localhost",
+                    port: 8128,
+                    path: "http://localhost:" + PORT
+                };
 
-    it('should serve saved response in dump file', function(done) {
+                var deferred = Q.defer();
+
+                http.get(options, function(res) {
+                    deferred.resolve();
+                });
+
+                return deferred.promise;
+            })
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                var x = fs.readFileSync(dumpFile, "utf-8");
+                var headerValue = JSON.parse(x)[0].headers["Content-Type"];
+                assert.equal("text/plain", headerValue);
+            });
+        });
+    });
+
+    it("should serve saved response in dump file", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(['dump', '--file', dumpFile]);
+                return offly.start(["dump", "--file", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -107,7 +142,7 @@ describe('offly e2e', function() {
                 return offly.stop();
             })
             .then(function() {
-                return offly.start(['serve', '--file', dumpFile]);
+                return offly.start(["serve", "--file", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -119,7 +154,7 @@ describe('offly e2e', function() {
                 var deferred = Q.defer();
                 http.get(options, function(res) {
                     assert.equal(200, res.statusCode);
-                    res.on('data', function (chunk) {
+                    res.on("data", function (chunk) {
                         assert.equal("doooh", chunk);
                         deferred.resolve();
                     });
@@ -132,15 +167,15 @@ describe('offly e2e', function() {
 
 
 
-    function startContentServer() {
-        server = http.createServer(function (req, res) {
-            res.writeHead(200, {'Content-Type': 'text/plain'});
+    function startContentServer(serverDefinition) {
+        server = http.createServer(serverDefinition || function (req, res) {
+            res.writeHead(200, {"Content-Type": "text/plain"});
             res.end("doooh");
         });
 
         var deferred = Q.defer();
 
-        server.on('listening', function() {
+        server.on("listening", function() {
             deferred.resolve();
         });
 
