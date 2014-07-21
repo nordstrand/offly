@@ -5,20 +5,22 @@
   "main": "index.js",
   "dependencies": {
     "JSONStream": "^0.8.2",
+    "cheerio": "^0.17.0",
     "colors": "^0.6.2",
     "concat-stream": "^1.4.6",
     "connect": "^3.0.1",
+    "event-stream": "^3.1.7",
     "minimist": "^0.1.0",
     "mkdirp": "^0.5.0",
     "morgan": "^1.1.1",
     "phantomjs": "^1.9.7-12",
     "prettysize": "0.0.3",
     "request": "^2.36.0",
+    "require-all": "0.0.8",
     "sprintf-js": "0.0.7",
     "temp": "^0.8.0",
     "underscore": "^1.6.0",
-    "wd": "^0.3.3",
-    "require-all": "0.0.8"
+    "wd": "^0.3.3"
   },
   "devDependencies": {
     "mocha": "^1.20.1",
@@ -26,7 +28,8 @@
     "chai": "^1.9.1"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha 'test/**/*.js'",
+    "postinstall" : "cd node_modules/filternet/; npm install; cd ../..;"
   },
   "author": "",
   "license": "ISC"
