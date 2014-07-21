@@ -11,7 +11,7 @@ describe("normalize-header", function () {
 
         stream
         .pipe(concat(function (data) {
-            var html = new Buffer(data[0].data, "base64").toString();
+            var html = data[0].data.toString();
             
             expect(html).to.contain("<title>OFFLY: DOH</title>");
             
@@ -39,7 +39,7 @@ describe("normalize-header", function () {
 
         stream
         .pipe(concat(function (data) {
-            var html = new Buffer(data[0].data, "base64").toString();
+            var html = data[0].data.toString();
             
             expect(html).not.to.contain("<title>OFFLY: DOH</title>");
             
@@ -64,6 +64,6 @@ describe("normalize-header", function () {
     
     
     function html(s) {
-        return new Buffer(s).toString("base64");
+        return new Buffer(s);
     }
 });
