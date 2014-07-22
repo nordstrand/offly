@@ -47,6 +47,33 @@ describe("offly e2e", function() {
         });
     });
 
+    it("should proxy response on custom port", function(done) {
+        wrapAsyncPromise(done, function() {
+            return startContentServer()
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile, "--port", 3001]);
+            })
+            .then(function() {
+                var options = {
+                    host: "localhost",
+                    port: 3001,
+                    path: "http://localhost:" + PORT
+                };
+
+                var deferred = Q.defer();
+                http.get(options, function(res) {
+                    assert.equal(200, res.statusCode);
+                    res.on("data", function (chunk) {
+                        assert.equal("doooh", chunk);
+                        deferred.resolve();
+                    });
+                });
+
+                return deferred.promise;
+            });
+        });
+    });
+
     it("should persist response", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer()
