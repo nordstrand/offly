@@ -22,4 +22,4 @@ module.exports = function (register) {
     });
     
     register(stream).as("mutate title tag").atPriority(100);
-}
+};

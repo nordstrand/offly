@@ -1,4 +1,4 @@
-var settitle = require("../../lib/transforms/set-title"),
+var settitle = require("../../transform-example/set-title"),
     concat = require('concat-stream'),
     expect = require('chai').expect,
     getTransformStream = require("../test-utils").getTransformStream;;
