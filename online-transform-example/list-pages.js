@@ -4,7 +4,9 @@ var es = require("event-stream"),
     _  = require("underscore"),
     cheerio = require('cheerio');
 
-module.exports = function (register, data) {
+module.exports = function (register, ctx) {
+    
+    var data = ctx.data;
 
     var stream = es.mapSync(function (d) {
         var request = d.request;

@@ -8,9 +8,12 @@ var assert = require("assert"),
     offly = require("./app-under-test");
 
 describe("offly e2e", function() {
-    var server;
-    var PORT = 9615;
-    var dumpFile;
+
+    var CONTENT_SERVER_PORT = 9615,
+        OFFLY_PORT = 8128,
+        server,
+        dumpFile;
+
 
     beforeEach(function() {
         dumpFile = temp.openSync().path;
@@ -31,8 +34,8 @@ describe("offly e2e", function() {
             .then(function() {
                 var options = {
                     host: "localhost",
-                    port: 8128,
-                    path: "http://localhost:" + PORT
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -59,7 +62,7 @@ describe("offly e2e", function() {
                 var options = {
                     host: "localhost",
                     port: 3001,
-                    path: "http://localhost:" + PORT
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -85,8 +88,8 @@ describe("offly e2e", function() {
             .then(function() {
                 var options = {
                     host: "localhost",
-                    port: 8128,
-                    path: "http://localhost:" + PORT
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -120,8 +123,8 @@ describe("offly e2e", function() {
             .then(function() {
                 var options = {
                     host: "localhost",
-                    port: 8128,
-                    path: "http://localhost:" + PORT
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -152,8 +155,8 @@ describe("offly e2e", function() {
             .then(function() {
                 var options = {
                     host: "localhost",
-                    port: 8128,
-                    path: "http://localhost:" + PORT
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -176,8 +179,8 @@ describe("offly e2e", function() {
             .then(function() {
                 var options = {
                     host: "localhost",
-                    port: 8128,
-                    path: "http://localhost:" + PORT
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT
                 };
 
                 var deferred = Q.defer();
@@ -195,6 +198,65 @@ describe("offly e2e", function() {
     });
 
 
+    it("should override content of dump file in exploded mode if matching file found", function(done) {
+        
+        var explodepath = temp.mkdirSync();
+        console.log(explodepath);
+        fs.writeFileSync(explodepath+"/abc", "file content");
+        
+        wrapAsyncPromise(done, function() {
+            return startContentServer()
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile]);
+            })
+            .then(function() {
+                var options = {
+                    host: "localhost",
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT + "/abc"
+                };
+
+                var deferred = Q.defer();
+
+                http.get(options, function(res) {
+console.log(res.statusCode)
+                    deferred.resolve();
+                });
+
+                return deferred.promise;
+            })
+            .then(function() {
+                return stopContentServer();
+            })
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                return offly.start(["serve",
+                                    "--file", dumpFile,
+                                    "--explode",
+                                    "--explode_path", explodepath]);
+            })
+            .then(function() {
+                var options = {
+                    host: "localhost",
+                    port: OFFLY_PORT,
+                    path: "http://localhost:" + CONTENT_SERVER_PORT + "/abc"
+                };
+
+                var deferred = Q.defer();
+                http.get(options, function(res) {
+                    assert.equal(200, res.statusCode);
+                    res.on("data", function (chunk) {
+                        assert.equal("file content", chunk);
+                        deferred.resolve();
+                    });
+                });
+
+                return deferred.promise;
+            });
+        });
+    });
 
     function startContentServer(serverDefinition) {
         server = http.createServer(serverDefinition || function (req, res) {
@@ -208,7 +270,7 @@ describe("offly e2e", function() {
             deferred.resolve();
         });
 
-        server.listen(PORT);
+        server.listen(CONTENT_SERVER_PORT);
 
         return deferred.promise;
     }
