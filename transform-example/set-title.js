@@ -1,3 +1,5 @@
+/*jshint node: true */
+
 /**
  *  modifies value of document.title for html documents
  *

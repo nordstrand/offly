@@ -1,3 +1,5 @@
+/*jshint node: true, mocha : true */
+
 var normalizeheaders = require("../../lib/transforms/normalize-headers"),
     concat = require('concat-stream'),
     expect = require('chai').expect,

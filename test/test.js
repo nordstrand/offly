@@ -1,3 +1,5 @@
+/*jshint node: true, mocha : true */
+
 var assert = require("assert"),
     http = require("http"),
     fs = require("fs"),
@@ -124,7 +126,7 @@ describe("offly e2e", function() {
 
                 var deferred = Q.defer();
 
-                http.get(options, function(res) {
+                http.get(options, function() {
                     deferred.resolve();
                 });
 
@@ -156,7 +158,7 @@ describe("offly e2e", function() {
 
                 var deferred = Q.defer();
 
-                http.get(options, function(res) {
+                http.get(options, function() {
                     deferred.resolve();
                 });
 
@@ -235,4 +237,4 @@ describe("offly e2e", function() {
             done(e);
         });
     }
-})
+});

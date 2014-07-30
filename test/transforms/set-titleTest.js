@@ -1,7 +1,9 @@
+/*jshint node: true, mocha : true */
+
 var settitle = require("../../transform-example/set-title"),
     concat = require('concat-stream'),
     expect = require('chai').expect,
-    getTransformStream = require("../test-utils").getTransformStream;;
+    getTransformStream = require("../test-utils").getTransformStream;
 
 describe("normalize-header", function () {
     

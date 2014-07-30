@@ -1,6 +1,7 @@
+/*jshint node: true */
+
 var es = require("event-stream"),
     _  = require("underscore"),
-    sprintf = require("sprintf-js").sprintf,
     cheerio = require('cheerio');
 
 module.exports = function (register, data) {

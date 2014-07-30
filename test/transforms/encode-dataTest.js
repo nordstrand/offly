@@ -1,7 +1,9 @@
+/*jshint node: true, mocha : true */
+
 var encodeData = require("../../lib/transforms/encode-data"),
     concat = require('concat-stream'),
     expect = require('chai').expect,
-    getTransformStream = require("../test-utils").getTransformStream;;
+    getTransformStream = require("../test-utils").getTransformStream;
 
 describe("encode-data", function () {
     

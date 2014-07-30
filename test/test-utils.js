@@ -1,3 +1,5 @@
+/*jshint node: true */
+
 module.exports = {
     getTransformStream: function (stream) {
         var filt;
