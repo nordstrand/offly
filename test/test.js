@@ -120,21 +120,7 @@ describe("offly e2e", function() {
             .then(function() {
                 return offly.start(["dump", "--file", dumpFile]);
             })
-            .then(function() {
-                var options = {
-                    host: "localhost",
-                    port: OFFLY_PORT,
-                    path: "http://localhost:" + CONTENT_SERVER_PORT
-                };
-
-                var deferred = Q.defer();
-
-                http.get(options, function() {
-                    deferred.resolve();
-                });
-
-                return deferred.promise;
-            })
+            .then(HTTP_GET)
             .then(function() {
                 return offly.stop();
             })
@@ -146,27 +132,42 @@ describe("offly e2e", function() {
         });
     });
 
+    it("should append existing file if --append is used", function(done) {
+        wrapAsyncPromise(done, function() {
+            return startContentServer(function (req, res) {
+                res.writeHead(200, {"Content-type": "text/plain"});
+                res.end("doooh");
+            })
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile]);
+            })
+            .then(HTTP_GET)
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile, "--append"]);
+            })
+            .then(HTTP_GET)
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                var x = fs.readFileSync(dumpFile, "utf-8");
+                var entries = JSON.parse(x).length;
+                assert.equal(2, entries);
+            });
+        });
+    });
+
+
     it("should serve saved response in dump file", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
                 return offly.start(["dump", "--file", dumpFile]);
             })
-            .then(function() {
-                var options = {
-                    host: "localhost",
-                    port: OFFLY_PORT,
-                    path: "http://localhost:" + CONTENT_SERVER_PORT
-                };
-
-                var deferred = Q.defer();
-
-                http.get(options, function() {
-                    deferred.resolve();
-                });
-
-                return deferred.promise;
-            })
+            .then(HTTP_GET)
             .then(function() {
                 return stopContentServer();
             })
@@ -210,20 +211,7 @@ describe("offly e2e", function() {
                 return offly.start(["dump", "--file", dumpFile]);
             })
             .then(function() {
-                var options = {
-                    host: "localhost",
-                    port: OFFLY_PORT,
-                    path: "http://localhost:" + CONTENT_SERVER_PORT + "/abc"
-                };
-
-                var deferred = Q.defer();
-
-                http.get(options, function(res) {
-console.log(res.statusCode)
-                    deferred.resolve();
-                });
-
-                return deferred.promise;
+                return HTTP_GET( "http://localhost:" + CONTENT_SERVER_PORT + "/abc");
             })
             .then(function() {
                 return stopContentServer();
@@ -290,6 +278,25 @@ console.log(res.statusCode)
         return deferred.promise;
     }
 
+    function HTTP_GET(url, cb) {
+        url = url || "http://localhost:" + CONTENT_SERVER_PORT;
+        cb = cb || function() {
+            deferred.resolve();
+        };
+        
+        var options = {
+            host: "localhost",
+            port: OFFLY_PORT,
+            path: url
+        };
+
+        var deferred = Q.defer();
+
+        http.get(options, cb);
+
+        return deferred.promise;
+    }
+    
     function wrapAsyncPromise(done, f) {
         f()
         .then(function() {
