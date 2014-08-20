@@ -34,17 +34,19 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startHttpsContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump",
+                                    "--file", dumpFile,
+                                    "--sslDomain", "*"]);
             })
             .then(function() {
                 var options = {
-                    host: "localhost",
-                    port: OFFLY_PORT,
-                    path: "https://localhost:" + HTTPS_CONTENT_SERVER_PORT
+                    hostname: "localhost",
+                    port: HTTPS_CONTENT_SERVER_PORT,
+                    path: "/" 
                 };
-
+                //hmmm.. how to get node to make https call using offly as proxy?
                 var deferred = Q.defer();
-                http.get(options, function(res) {
+                https.get(options, function(res) {
                     assert.equal(200, res.statusCode);
                     res.on("data", function (chunk) {
                         assert.equal("doooh", chunk);
