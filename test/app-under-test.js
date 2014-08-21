@@ -5,17 +5,37 @@ var c = require("child_process"),
 
 var child;
 
+
+
 module.exports = {
 
     start : function (args) {
         var opts = {
-            cwd : __dirname + "/.."
+            cwd : __dirname + "/..",
+            
         };
 
         var deferred = Q.defer();
         
         child = c.fork("index", args, opts);
         child.on('message', function(data) {
+            deferred.resolve();
+        });
+
+        return deferred.promise;
+    },
+
+    startupAndWaitForTermination : function (args) {
+        var opts = {
+            cwd : __dirname + "/..",
+           
+        };
+
+        var deferred = Q.defer();
+        
+        child = c.fork("index", args, opts);
+        
+        child.on('exit', function() {
             deferred.resolve();
         });
 
