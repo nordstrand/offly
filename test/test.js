@@ -2,8 +2,6 @@
 
 var assert = require("assert"),
     http = require("http"),
-    https = require("https"),
-    pem = require('pem'),
     fs = require("fs"),
     Q = require("q"),
     temp = require("temp").track(),
@@ -12,10 +10,8 @@ var assert = require("assert"),
 describe("offly e2e", function() {
 
     var CONTENT_SERVER_PORT = 9615,
-        HTTPS_CONTENT_SERVER_PORT = 9616,
         OFFLY_PORT = 8128,
         server,
-        httpsServer,
         dumpFile;
 
 
@@ -25,40 +21,9 @@ describe("offly e2e", function() {
 
     afterEach(function(done) {
         stopContentServer()
-        .then(stopHttpsContentServer)
         .then(function() { return offly.stop(); })
         .then(done);
     });
-
-    xit("should proxy ssl response", function(done) {
-        wrapAsyncPromise(done, function() {
-            return startHttpsContentServer()
-            .then(function() {
-                return offly.start(["dump",
-                                    "--file", dumpFile,
-                                    "--sslDomain", "*"]);
-            })
-            .then(function() {
-                var options = {
-                    hostname: "localhost",
-                    port: HTTPS_CONTENT_SERVER_PORT,
-                    path: "/" 
-                };
-                //hmmm.. how to get node to make https call using offly as proxy?
-                var deferred = Q.defer();
-                https.get(options, function(res) {
-                    assert.equal(200, res.statusCode);
-                    res.on("data", function (chunk) {
-                        assert.equal("doooh", chunk);
-                        deferred.resolve();
-                    });
-                });
-
-                return deferred.promise;
-            });
-        });
-    });
-    
 
     it("should proxy response", function(done) {
         wrapAsyncPromise(done, function() {
@@ -306,48 +271,6 @@ describe("offly e2e", function() {
                 deferred.resolve();
             });
             server = undefined;
-        } else {
-            setTimeout(function() { deferred.resolve(); }, 0);
-        }
-
-        return deferred.promise;
-    }
-
-    function startHttpsContentServer(serverDefinition) {
-        serverDefinition = serverDefinition || function (req, res) {
-            res.writeHead(200, {"Content-Type": "text/plain"});
-            res.end("doooh ssl");
-        };
-        
-        var deferred = Q.defer();
-        
-        pem.createCertificate({
-            days:1, selfSigned:true,
-            commonName  : 'wtf.no'},
-            function(err, keys) {
-                httpsServer = https.createServer(
-                    {key: keys.serviceKey, cert: keys.certificate}, 
-                    serverDefinition).listen(1443);
-                
-                httpsServer.on("listening", function() {
-                    deferred.resolve();
-                });
-
-                httpsServer.listen(HTTPS_CONTENT_SERVER_PORT);
-
-        });
-
-        return deferred.promise;
-    }
-    
-    function stopHttpsContentServer() {
-        var deferred = Q.defer();
-
-        if (httpsServer) {
-            httpsServer.close(function() {
-                deferred.resolve();
-            });
-            httpsServer = undefined;
         } else {
             setTimeout(function() { deferred.resolve(); }, 0);
         }
