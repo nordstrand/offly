@@ -33,9 +33,9 @@ module.exports = {
 
         var deferred = Q.defer();
         
-        child = c.fork("index", args, opts);
+        var child2 = c.fork("index", args, opts);
         
-        child.on('exit', function() {
+        child2.on('exit', function() {
             deferred.resolve();
         });
 
