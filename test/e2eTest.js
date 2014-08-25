@@ -114,10 +114,7 @@ describe("offly e2e", function() {
     
     it("should normalize header capitalization on persist", function(done) {
         wrapAsyncPromise(done, function() {
-            return startContentServer(function (req, res) {
-                res.writeHead(200, {"ConTent-type": "text/plain"});
-                res.end("doooh");
-            })
+            return startContentServer()
             .then(function() {
                 return offly.start(["dump", "--file", dumpFile]);
             })
@@ -133,6 +130,29 @@ describe("offly e2e", function() {
         });
     });
 
+    it("should relativize anchor in the HTML if --relativize specified", function(done) {
+        wrapAsyncPromise(done, function() {
+            return startContentServer(function (req, res) {
+                res.writeHead(200, {"Content-type": "text/html"});
+                
+                res.end('<a href="https://doh.com/a/b">z</a>');
+            })
+            .then(function() {
+                return offly.start(["dump", "--file", dumpFile, "--relativize"]);
+            })
+            .then(HTTP_GET)
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                var x = fs.readFileSync(dumpFile, "utf-8");
+                var data = new Buffer(JSON.parse(x)[0].data, "base64").toString();
+                assert.equal('<a href="/a/b">z</a>', data);
+
+            });
+        });
+    });
+    
     it("should append existing file if --append is used", function(done) {
         wrapAsyncPromise(done, function() {
             return startContentServer(function (req, res) {
@@ -248,6 +268,7 @@ describe("offly e2e", function() {
     });
 
     function startContentServer(serverDefinition) {
+
         server = http.createServer(serverDefinition || function (req, res) {
             res.writeHead(200, {"Content-Type": "text/plain"});
             res.end("doooh");
