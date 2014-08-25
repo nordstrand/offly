@@ -21,6 +21,7 @@ describe("offly e2e", function() {
 
     afterEach(function(done) {
         stopContentServer()
+        
         .then(function() { return offly.stop(); })
         .then(done);
     });
@@ -202,7 +203,7 @@ describe("offly e2e", function() {
     it("should override content of dump file in exploded mode if matching file found", function(done) {
         
         var explodepath = temp.mkdirSync();
-        console.log(explodepath);
+        
         fs.writeFileSync(explodepath+"/abc", "file content");
         
         wrapAsyncPromise(done, function() {

@@ -1,7 +1,8 @@
 /*jshint node: true */
 
 var c = require("child_process"),
-    Q = require('q');
+    Q = require("q"),
+    _ = require("underscore");
 
 var child;
 
@@ -12,13 +13,14 @@ module.exports = {
     start : function (args) {
         var opts = {
             cwd : __dirname + "/..",
-            
         };
 
         var deferred = Q.defer();
+      
+        child = c.fork("index", args.concat("--quiet"), opts);
         
-        child = c.fork("index", args, opts);
-        child.on('message', function(data) {
+        
+        child.on('message', function() {
             deferred.resolve();
         });
 
@@ -33,7 +35,7 @@ module.exports = {
 
         var deferred = Q.defer();
         
-        var child2 = c.fork("index", args, opts);
+        var child2 = c.fork("index", args.concat("--quiet"), opts);
         
         child2.on('exit', function() {
             deferred.resolve();
