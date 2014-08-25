@@ -95,6 +95,24 @@ describe("offly e2e SSL", function() {
     });
     
     
+    it("should keep href url:s intact when not scraping recursively", function(done) {
+        this.timeout(5000);
+
+        wrapAsyncPromise(done, function() {
+            return startHttpContentServer()
+            .then(function() {
+                return offly.startupAndWaitForTermination(["scrape",
+                                    "--file", dumpFile,
+                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                    ]);
+            })
+            .then(function() {
+                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+                expect(new Buffer(x[0].data, 'base64').toString()).not.to.contain('href="/a"');
+            });
+        });
+    });
+    
     it("should crawl urls matching include", function(done) {
         this.timeout(5000);
         
