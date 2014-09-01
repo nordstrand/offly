@@ -9,7 +9,7 @@ var http = require("http"),
     offly = require("./app-under-test"),
     expect = require('chai').expect;
 
-describe("offly e2e SSL", function() {
+describe("offly e2e scrape", function() {
 
     var HTTP_CONTENT_SERVER_PORT = 9616,
         httpServer,

@@ -2,6 +2,8 @@
 
 A multi-purpose tool for capturing high fidelity static reproductions of highly dynamic web sites.
 
+Based on filternet.js and PhantomJS.
+
 ### Usage
 
 For generating a reproduction Offly spins up a proxy that intercepts and records all traffic going through it. Traffic can either be triggered manually through a web browser or programatically.
