@@ -2,7 +2,14 @@
   "name": "offly",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+
+  "bin": {
+    "offly": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nordstrand/offly.git"
+  },
   "dependencies": {
     "JSONStream": "^0.8.2",
     "bufferjs": "~ 1.0",
@@ -14,6 +21,7 @@
     "minimist": "^0.1.0",
     "mkdirp": "^0.5.0",
     "morgan": "^1.1.1",
+    "q": "^1.0.1",
     "pem": "^1.4.1",
     "phantomjs": "^1.9.7-12",
     "prettysize": "0.0.3",

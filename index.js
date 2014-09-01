@@ -1,4 +1,4 @@
-
+#! /usr/bin/env node
 
 requireFromRoot = (function(root) {
     return function(resource) {
