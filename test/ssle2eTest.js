@@ -57,6 +57,7 @@ describe("offly e2e SSL", function() {
 
         phantom = spawn(phantomPath, ["--webdriver=127.0.0.1:" + PHANTOM_WD_PORT,
                                       "--proxy=http://127.0.0.1:" + OFFLY_PORT,
+                                      "--ssl-protocol=any",
                                       "--ignore-ssl-errors=true"]);
 
         phantom.stdout.on('data', function(data) {
@@ -130,20 +131,20 @@ describe("offly e2e SSL", function() {
     }
     
     
-function getUrl(url) {
-    var deferred = Q.defer();
+    function getUrl(url) {
+        var deferred = Q.defer();
 
-    getBrowser()
-    .init()
-    .get(url)
-    .safeEval("console.log(document.body.innerText); document.body.innerText;")
-    .then(function(a) { 
-        deferred.resolve(a);
-    })
-    .quit();
+        getBrowser()
+        .init()
+        .get(url)
+        .safeEval("console.log(document.body.innerText); document.body.innerText;")
+        .then(function(a) { 
+            deferred.resolve(a);
+        })
+        .quit();
 
-    return deferred.promise;
-}
+        return deferred.promise;
+    }
 
     function getBrowser() {
         var browser = wd.promiseChainRemote();
