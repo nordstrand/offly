@@ -45,7 +45,7 @@ describe("offly e2e SSL", function() {
             })
             .then(startupPhantom)
             .then(function() {
-                return getUrl("https://localhost:" + HTTPS_CONTENT_SERVER_PORT);
+                return getUrl("https://127.0.0.1:" + HTTPS_CONTENT_SERVER_PORT);
             })
             .then(function(body) {
                 expect(body).to.equal("ssl doh");
