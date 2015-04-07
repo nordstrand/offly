@@ -8,6 +8,7 @@ var spawn = require('child_process').spawn,
     Q = require("q"),
     wd = require('wd'),
     temp = require("temp").track(),
+    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     offly = require("./app-under-test"),
     expect = require('chai').expect;
 
@@ -119,17 +120,6 @@ describe("offly e2e SSL", function() {
 
         return deferred.promise;
     }
-    
-    function wrapAsyncPromise(done, f) {
-        f()
-        .then(function() {
-            done();
-        })
-        .catch(function(e) {
-            done(e);
-        });
-    }
-    
     
     function getUrl(url) {
         var deferred = Q.defer();

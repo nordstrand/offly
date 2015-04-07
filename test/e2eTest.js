@@ -5,6 +5,7 @@ var assert = require("assert"),
     fs = require("fs"),
     Q = require("q"),
     temp = require("temp").track(),
+    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     offly = require("./app-under-test");
 
 describe("offly e2e", function() {
@@ -317,15 +318,5 @@ describe("offly e2e", function() {
         http.get(options, cb);
 
         return deferred.promise;
-    }
-    
-    function wrapAsyncPromise(done, f) {
-        f()
-        .then(function() {
-            done();
-        })
-        .catch(function(e) {
-            done(e);
-        });
     }
 });

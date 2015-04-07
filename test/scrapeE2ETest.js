@@ -4,9 +4,13 @@ var http = require("http"),
     _ = require('underscore'),
     fs = require('fs'),
     dns = require('dns'),
+    https = require("https"),
+    pem = require('pem'),
     Q = require("q"),
     temp = require("temp").track(),
     offly = require("./app-under-test"),
+    getLocalIp = require("./test-utils").getLocalIp,
+    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     expect = require('chai').expect;
 
 describe("offly e2e scrape", function() {
@@ -158,15 +162,6 @@ describe("offly e2e scrape", function() {
         });
     });
 
-    function getLocalIp() {
-        var deferred = Q.defer();
-        dns.lookup(require('os').hostname(), function (err, add) {
-            deferred.resolve(add);
-        });
-
-        return deferred.promise;
-   }
-    
     function startHttpContentServer(serverDefinition) {
         serverDefinition = serverDefinition || function (req, res) {
             res.writeHead(200, {"Content-Type": "text/html"});
@@ -205,15 +200,5 @@ describe("offly e2e scrape", function() {
         }
 
         return deferred.promise;
-    }
-    
-    function wrapAsyncPromise(done, f) {
-        f()
-        .then(function() {
-            done();
-        })
-        .catch(function(e) {
-            done(e);
-        });
     }
 });
