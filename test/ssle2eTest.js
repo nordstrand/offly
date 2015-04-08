@@ -8,8 +8,10 @@ var spawn = require('child_process').spawn,
     Q = require("q"),
     wd = require('wd'),
     temp = require("temp").track(),
+    fs = require("fs"),
     wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     offly = require("./app-under-test"),
+     getLocalIp = require("./test-utils").getLocalIp,
     expect = require('chai').expect;
 
 describe("offly e2e SSL", function() {
@@ -19,8 +21,20 @@ describe("offly e2e SSL", function() {
         PHANTOM_WD_PORT = 4444,
         httpsServer,
         dumpFile,
-        phantom;
+        phantom,
+        localIp;
 
+    before(function(done) {
+        getLocalIp()
+        .then(function(addr) {
+            //PhantomJS 1.9.7 will ignore a configured proxy when fetching content from 
+            //localhost/127.0.0.1 bypassing offly, 
+            //thus we have to look up the IP of the interface the dummy content server 
+            //is listening on
+            localIp = addr;
+        })
+        .then(done);
+    });
 
     beforeEach(function() {
         dumpFile = temp.openSync().path;
@@ -45,10 +59,19 @@ describe("offly e2e SSL", function() {
             })
             .then(startupPhantom)
             .then(function() {
-                return getUrl("https://127.0.0.1:" + HTTPS_CONTENT_SERVER_PORT);
+                return getUrl("https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT);
             })
             .then(function(body) {
                 expect(body).to.equal("ssl doh");
+            })
+            .then(function() {
+                return offly.stop();
+            })
+            .then(function() {
+                console.log("https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT + "==" + dumpFile);
+                
+                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+                expect(x.length).to.equal(1);
             });
         });
     });
