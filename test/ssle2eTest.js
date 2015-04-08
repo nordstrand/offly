@@ -68,10 +68,7 @@ describe("offly e2e SSL", function() {
                 return offly.stop();
             })
             .then(function() {
-                console.log("https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT + "==" + dumpFile);
-                
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(1);
+                expect(JSON.parse(fs.readFileSync(dumpFile, "utf-8")).length).to.equal(1);
             });
         });
     });
