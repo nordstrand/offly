@@ -1,11 +1,9 @@
 /*jshint node: true, mocha : true */
 
-var http = require("http"),
+var
     https = require("https"),
     pem = require('pem'),
-    _ = require('underscore'),
     fs = require('fs'),
-    dns = require('dns'),
     Q = require("q"),
     temp = require("temp").track(),
     offly = require("./app-under-test"),
