@@ -45,8 +45,8 @@ describe("offly e2e scrape", function() {
             .then(function() {
                 
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                   dumpFile
                                     ]);
             })
             .then(function() {
@@ -63,9 +63,9 @@ describe("offly e2e scrape", function() {
             return startHttpContentServer()
             .then(function() {
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive"
+                                    "--recursive",
+                                    dumpFile
                                     ]);
             })
             .then(function() {
@@ -83,9 +83,9 @@ describe("offly e2e scrape", function() {
             return startHttpContentServer()
             .then(function() {
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive"
+                                    "--recursive",
+                                    dumpFile
                                     ]);
             })
             .then(function() {
@@ -103,8 +103,8 @@ describe("offly e2e scrape", function() {
             return startHttpContentServer()
             .then(function() {
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                    dumpFile
                                     ]);
             })
             .then(function() {
@@ -121,10 +121,10 @@ describe("offly e2e scrape", function() {
             return startHttpContentServer()
             .then(function() {
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
                                     "--recursive",
-                                    "--include=a"
+                                    "--include=a",
+                                    dumpFile
                                     ]);
             })
             .then(function() {
@@ -144,10 +144,10 @@ describe("offly e2e scrape", function() {
             return startHttpContentServer()
             .then(function() {
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
                                     "--recursive",
-                                    "--exclude=a"
+                                    "--exclude=a",
+                                    dumpFile
                                     ]);
             })
             .then(function() {

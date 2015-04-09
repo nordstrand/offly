@@ -54,8 +54,8 @@ describe("offly e2e SSL", function() {
             return startHttpsContentServer()
             .then(function() {
                 return offly.start(["dump",
-                                    "--file", dumpFile,
-                                    "--sslDomain", "*"]);
+                                    "--sslDomain", "*",
+                                   dumpFile]);
             })
             .then(startupPhantom)
             .then(function() {

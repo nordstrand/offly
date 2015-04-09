@@ -31,7 +31,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -58,7 +58,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile, "--port", 3001]);
+                return offly.start(["dump", "--port", 3001, dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -85,7 +85,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -117,7 +117,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(HTTP_GET)
             .then(function() {
@@ -139,7 +139,7 @@ describe("offly e2e", function() {
                 res.end('<a href="https://doh.com/a/b">z</a>');
             })
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile, "--relativize"]);
+                return offly.start(["dump", "--relativize", dumpFile]);
             })
             .then(HTTP_GET)
             .then(function() {
@@ -161,14 +161,14 @@ describe("offly e2e", function() {
                 res.end("doooh");
             })
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(HTTP_GET)
             .then(function() {
                 return offly.stop();
             })
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile, "--append"]);
+                return offly.start(["dump", "--append", dumpFile]);
             })
             .then(HTTP_GET)
             .then(function() {
@@ -187,7 +187,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(HTTP_GET)
             .then(function() {
@@ -197,7 +197,7 @@ describe("offly e2e", function() {
                 return offly.stop();
             })
             .then(function() {
-                return offly.start(["serve", "--file", dumpFile]);
+                return offly.start(["serve", dumpFile]);
             })
             .then(function() {
                 var options = {
@@ -230,7 +230,7 @@ describe("offly e2e", function() {
         wrapAsyncPromise(done, function() {
             return startContentServer()
             .then(function() {
-                return offly.start(["dump", "--file", dumpFile]);
+                return offly.start(["dump", dumpFile]);
             })
             .then(function() {
                 return HTTP_GET( "http://localhost:" + CONTENT_SERVER_PORT + "/abc");
@@ -243,9 +243,9 @@ describe("offly e2e", function() {
             })
             .then(function() {
                 return offly.start(["serve",
-                                    "--file", dumpFile,
                                     "--explode",
-                                    "--explode_path", explodepath]);
+                                    "--explode_path", explodepath,
+                                    dumpFile]);
             })
             .then(function() {
                 var options = {

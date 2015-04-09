@@ -46,9 +46,9 @@ describe("offly e2e scrape of ssl site", function() {
             .then(function() {
                 
                 return offly.startupAndWaitForTermination(["scrape",
-                                    "--file", dumpFile,
                                     "--crawl_url=https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT,
-                                    "--sslDomain=*"
+                                    "--sslDomain=*",
+                                    dumpFile
                                     ]);
             })
             .then(function() {
