@@ -1,7 +1,7 @@
 {
   "name": "offly",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Multi-purpose tool for capturing high fidelity static reproductions of highly dynamic web sites",
 
   "bin": {
     "offly": "./index.js"
@@ -21,20 +21,19 @@
     "minimist": "^0.1.0",
     "mkdirp": "^0.5.0",
     "morgan": "^1.1.1",
-    "q": "^1.0.1",
-    "pem": "^1.4.1",
-    "phantomjs": "^1.9.7-12",
+    "q": "^1.2.0",
+    "pem": "^1.7.2",
+    "phantomjs": "^1.9.16",
     "prettysize": "0.0.3",
     "request": "^2.36.0",
     "require-all": "0.0.8",
     "sprintf-js": "0.0.7",
     "temp": "^0.8.0",
     "underscore": "^1.6.0",
-    "wd": "^0.3.3"
+    "wd": "^0.3.11"
   },
   "devDependencies": {
-    "mocha": "^1.21.5",
-    "q": "^1.0.1",
+    "mocha": "^2.2.4",
     "chai": "^1.9.1"
   },
   "scripts": {
