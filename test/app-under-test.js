@@ -1,8 +1,7 @@
 /*jshint node: true */
 
 var c = require("child_process"),
-    Q = require("q"),
-    _ = require("underscore");
+    Q = require("q");
 
 var child;
 
