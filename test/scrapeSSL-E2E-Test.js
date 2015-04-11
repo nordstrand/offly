@@ -11,7 +11,7 @@ var
     wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     expect = require('chai').expect;
 
-describe("offly e2e scrape of ssl site", function() {
+describe("e2e SSL scrape", function() {
 
     var HTTPS_CONTENT_SERVER_PORT = 9616,
         httpsServer,

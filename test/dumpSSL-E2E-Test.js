@@ -14,7 +14,7 @@ var spawn = require('child_process').spawn,
      getLocalIp = require("./test-utils").getLocalIp,
     expect = require('chai').expect;
 
-describe("offly e2e SSL", function() {
+describe("e2e SSL dump", function() {
 
     var HTTPS_CONTENT_SERVER_PORT = 9616,
         OFFLY_PORT = 8128,

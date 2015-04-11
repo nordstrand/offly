@@ -8,7 +8,7 @@ var assert = require("assert"),
     wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
     offly = require("./app-under-test");
 
-describe("offly e2e", function() {
+describe("e2e", function() {
 
     var CONTENT_SERVER_PORT = 9615,
         OFFLY_PORT = 8128,

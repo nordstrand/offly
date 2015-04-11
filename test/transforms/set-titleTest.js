@@ -5,7 +5,7 @@ var settitle = require("../../transform-example/set-title"),
     expect = require('chai').expect,
     getTransformStream = require("../test-utils").getTransformStream;
 
-describe("normalize-header", function () {
+describe("set-title", function () {
     
     it("should set title for html", function (done) {
 
