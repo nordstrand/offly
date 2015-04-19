@@ -30,14 +30,16 @@ module.exports = {
         });
         return deferred.promise;
    },
-    
-    wrapAsyncPromise: function (done, f) {
-        f()
-        .then(function() {
-            done();
-        })
-        .catch(function(e) {
-            done(e);
+   
+    it2: function(text, fn) {
+        it(text, function(done) {
+            fn()
+            .then(function() {
+                done();
+            })
+            .catch(function(e) {
+                done(e);
+            });
         });
     }
 };

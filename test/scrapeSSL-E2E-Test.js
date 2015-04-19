@@ -8,11 +8,13 @@ var
     temp = require("temp").track(),
     offly = require("./app-under-test"),
     getLocalIp = require("./test-utils").getLocalIp,
-    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
+    e2e = require("./test-utils").it2,
     expect = require('chai').expect;
 
-describe("e2e SSL scrape", function() {
+describe("offly SSL scrape", function() {
 
+    this.timeout(5000);
+    
     var HTTPS_CONTENT_SERVER_PORT = 9616,
         httpsServer,
         dumpFile,
@@ -39,21 +41,18 @@ describe("e2e SSL scrape", function() {
         .then(done);
     });
 
-    it("should scrape single url", function(done) {
-        this.timeout(5000);
-        wrapAsyncPromise(done, function() {
-            return startHttpsContentServer()
-            .then(function() {
-                
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT,
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(1);
-            });
+    e2e("should scrape single url", function() {
+        return startHttpsContentServer()
+        .then(function() {
+
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT,
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(x.length).to.equal(1);
         });
     });
     

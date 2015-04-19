@@ -9,13 +9,15 @@ var spawn = require('child_process').spawn,
     wd = require('wd'),
     temp = require("temp").track(),
     fs = require("fs"),
-    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
+    e2e = require("./test-utils").it2,
     offly = require("./app-under-test"),
-     getLocalIp = require("./test-utils").getLocalIp,
+    getLocalIp = require("./test-utils").getLocalIp,
     expect = require('chai').expect;
 
-describe("e2e SSL dump", function() {
+describe("offly SSL dump", function() {
 
+    this.timeout(5000);
+    
     var HTTPS_CONTENT_SERVER_PORT = 9616,
         OFFLY_PORT = 8128,
         PHANTOM_WD_PORT = 4444,
@@ -47,29 +49,25 @@ describe("e2e SSL dump", function() {
         .then(done);
     });
 
-    it("should proxy response", function(done) {
-        this.timeout(5000);
-        
-        wrapAsyncPromise(done, function() {
-            return startHttpsContentServer()
-            .then(function() {
-                return offly.start(["dump",
-                                    "--sslDomain", "*",
-                                   dumpFile]);
-            })
-            .then(startupPhantom)
-            .then(function() {
-                return getUrl("https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT);
-            })
-            .then(function(body) {
-                expect(body).to.equal("ssl doh");
-            })
-            .then(function() {
-                return offly.stop();
-            })
-            .then(function() {
-                expect(JSON.parse(fs.readFileSync(dumpFile, "utf-8")).length).to.equal(1);
-            });
+    e2e("should proxy response", function() {
+        return startHttpsContentServer()
+        .then(function() {
+            return offly.start(["dump",
+                                "--sslDomain", "*",
+                               dumpFile]);
+        })
+        .then(startupPhantom)
+        .then(function() {
+            return getUrl("https://" + localIp + ":" + HTTPS_CONTENT_SERVER_PORT);
+        })
+        .then(function(body) {
+            expect(body).to.equal("ssl doh");
+        })
+        .then(function() {
+            return offly.stop();
+        })
+        .then(function() {
+            expect(JSON.parse(fs.readFileSync(dumpFile, "utf-8")).length).to.equal(1);
         });
     });
 

@@ -7,10 +7,12 @@ var http = require("http"),
     temp = require("temp").track(),
     offly = require("./app-under-test"),
     getLocalIp = require("./test-utils").getLocalIp,
-    wrapAsyncPromise = require("./test-utils").wrapAsyncPromise,
+    e2e = require("./test-utils").it2,
     expect = require('chai').expect;
 
-describe("e2e scrape", function() {
+describe("offly scrape", function() {
+    
+    this.timeout(5000);
 
     var HTTP_CONTENT_SERVER_PORT = 9616,
         httpServer,
@@ -38,124 +40,101 @@ describe("e2e scrape", function() {
         .then(done);
     });
 
-    it("should scrape single url", function(done) {
-        this.timeout(5000);
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                   dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(1);
-            });
-        });
-    });
-    
-    it("should scrape recursively", function(done) {
-        this.timeout(5000);
+    e2e("should scrape single url", function() {
+        return startHttpContentServer()
+        .then(function() {
 
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive",
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(3);
-                expect(_.pluck(x, 'url')).to.include("/", "/a", "/b");
-            });
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                               dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(x.length).to.equal(1);
         });
     });
     
-    it("should make href url:s relative when scraping recursively", function(done) {
-        this.timeout(5000);
-
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive",
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(new Buffer(x[0].data, 'base64').toString()).to.contain('href="/a"');
-            });
+    e2e("should scrape recursively", function() {
+        return startHttpContentServer()
+        .then(function() {
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                "--recursive",
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(x.length).to.equal(3);
+            expect(_.pluck(x, 'url')).to.include("/", "/a", "/b");
         });
     });
     
-    
-    it("should keep href url:s intact when not scraping recursively", function(done) {
-        this.timeout(5000);
-
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(new Buffer(x[0].data, 'base64').toString()).not.to.contain('href="/a"');
-            });
-        });
-    });
-    
-    it("should crawl urls matching include", function(done) {
-        this.timeout(5000);
-        
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive",
-                                    "--include=a",
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(2);
-                expect(_.pluck(x, 'url')).to.include("/", "/a");
-                expect(_.pluck(x, 'url')).not.to.include("/b");
-            });
+    e2e("should make href url:s relative when scraping recursively", function() {
+        return startHttpContentServer()
+        .then(function() {
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                "--recursive",
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(new Buffer(x[0].data, 'base64').toString()).to.contain('href="/a"');
         });
     });
     
     
-    it("should not crawl urls matching exclude", function(done) {
-        this.timeout(5000);
-        
-        wrapAsyncPromise(done, function() {
-            return startHttpContentServer()
-            .then(function() {
-                return offly.startupAndWaitForTermination(["scrape",
-                                    "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
-                                    "--recursive",
-                                    "--exclude=a",
-                                    dumpFile
-                                    ]);
-            })
-            .then(function() {
-                var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
-                expect(x.length).to.equal(2);
-                expect(_.pluck(x, 'url')).to.include("/", "/b");
-                expect(_.pluck(x, 'url')).not.to.include("/a");
-            });
+    e2e("should keep href url:s intact when not scraping recursively", function() {
+        return startHttpContentServer()
+        .then(function() {
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(new Buffer(x[0].data, 'base64').toString()).not.to.contain('href="/a"');
+        });
+    });
+    
+    e2e("should crawl urls matching include", function() {       
+        return startHttpContentServer()
+        .then(function() {
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                "--recursive",
+                                "--include=a",
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(x.length).to.equal(2);
+            expect(_.pluck(x, 'url')).to.include("/", "/a");
+            expect(_.pluck(x, 'url')).not.to.include("/b");
+        });
+    });
+    
+    
+    e2e("should not crawl urls matching exclude", function() {
+        return startHttpContentServer()
+        .then(function() {
+            return offly.startupAndWaitForTermination(["scrape",
+                                "--crawl_url=http://" + localIp + ":" + HTTP_CONTENT_SERVER_PORT,
+                                "--recursive",
+                                "--exclude=a",
+                                dumpFile
+                                ]);
+        })
+        .then(function() {
+            var x = JSON.parse(fs.readFileSync(dumpFile, "utf-8"));
+            expect(x.length).to.equal(2);
+            expect(_.pluck(x, 'url')).to.include("/", "/b");
+            expect(_.pluck(x, 'url')).not.to.include("/a");
         });
     });
 
