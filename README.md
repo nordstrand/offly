@@ -1,5 +1,4 @@
 # Offly [![Build Status](https://travis-ci.org/nordstrand/offly.svg?branch=master)](https://travis-ci.org/nordstrand/offly) [![Coverage Status](https://coveralls.io/repos/nordstrand/offly/badge.svg?branch=master)](https://coveralls.io/r/nordstrand/offly?branch=master)
-===
 
 A multi-purpose tool for capturing high fidelity static reproductions of highly dynamic web sites.
 
