@@ -3,3 +3,4 @@ exploded/
 node_modules/*
 !node_modules/filternet
 certs/
+coverage/
